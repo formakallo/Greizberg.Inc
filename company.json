@@ -1,0 +1,11 @@
+{
+  "name": "Greizberg Inc",
+  "founded": "1 October 2026",
+  "founder": "Forma Kallo",
+  "business": "Photography and photo editing",
+  "email": "formakallo@greiz-inc.com",
+  "team": [
+    { "name": "Logan Call", "role": "Photographer", "email": "calllogan129@gmail.com", "image": "logan.png" },
+    { "name": "Jon Grub", "role": "Photo Editor", "email": "jonasgruebnau2@gmail.com", "image": "jon.png" }
+  ]
+}

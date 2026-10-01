@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order – Greizberg Inc</title>
+<link rel="icon" type="image/ico" href="Gr.ico">
+<style>
+body,.card p,.lead{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+h1,h2,h3{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-weight:700;letter-spacing:-.02em}
+.card p{line-height:1.5}
+@keyframes slideIn{
+  from{opacity:0;transform:translateY(-30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+#plans.show .card{animation:slideIn .6s ease both}
+#plans.show .card:nth-child(2){animation-delay:.15s}
+#plans.show .card:nth-child(3){animation-delay:.3s}
+:root{--bg:#faf8f4;--fg:#1d1d1b;--muted:#6b6a65;--card:#fff;--accent:#c2410c;--line:#e7e3da}
+@media (prefers-color-scheme:dark){:root{--bg:#161513;--fg:#f1eee8;--muted:#a09d95;--card:#1f1e1b;--accent:#fb923c;--line:#33312c}}
+*{box-sizing:border-box}
+body{margin:0 auto;max-width:880px;padding:0 20px 60px;background:var(--bg);color:var(--fg);font-family:Georgia,"Times New Roman",serif;line-height:1.6}
+a{color:var(--accent)}
+.back{display:inline-block;margin:20px 0;font-family:system-ui,sans-serif;font-size:15px;color:var(--muted);text-decoration:none}
+h1{font-size:clamp(30px,6vw,46px);line-height:1.15;margin:30px 0 10px;text-align:center}
+.lead{text-align:center;color:var(--muted);margin:0 0 30px}
+.bar{display:flex;gap:10px;flex-wrap:wrap}
+.bar input{flex:1;min-width:220px;padding:14px 16px;font-size:16px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font-family:system-ui,sans-serif}
+.btn{background:var(--accent);color:#fff;border:0;padding:14px 24px;border-radius:8px;font-size:16px;font-weight:600;font-family:system-ui,sans-serif;cursor:pointer}
+#plans{display:none;margin-top:40px}
+#plans h2{text-align:center;margin:0 0 20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column}
+.card.featured{border-color:var(--accent)}
+.card h3{margin:0 0 8px;font-size:20px}
+.card p{margin:0 0 20px;color:var(--muted);flex:1}
+.card .btn{width:100%}
+.err{color:var(--accent);font-family:system-ui,sans-serif;font-size:14px;margin:8px 0 0;min-height:20px}
+</style>
+</head>
+<body>
+
+<a class="back" href="index.html">← Back to Greizberg Inc</a>
+
+<h1>What should we edit?</h1>
+<p class="lead">Describe the edit you'd like, then pick a package.</p>
+
+<div class="bar">
+  <input type="text" id="request" placeholder="e.g. remove the background and brighten the colors">
+  <button class="btn" id="orderNow">Order now</button>
+</div>
+<p class="err" id="err"></p>
+
+<section id="plans">
+  <h2>Choose your package</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Standard</h3>
+      <p>A simple edit of your photo, such as basic retouching and color fixes.</p>
+      <div class="time">⏱ Ready in about 24 hours</div>
+      <button class="btn" data-plan="Standard">Standard order</button>
+    </div>
+    <div class="card featured">
+      <h3>Premium</h3>
+      <p>More detailed editing with extra care for the results, plus more changes to your photo.</p>
+      <div class="time">⏱ Ready in 2–3 days</div>
+      <button class="btn" data-plan="Premium">Premium order</button>
+    </div>
+    <div class="card">
+      <h3>Deluxe</h3>
+      <p>Our most thorough service for complex edits and the finest finishing.</p>
+      <div class="time">⏱ Ready in 4–5 days</div>
+      <button class="btn" data-plan="Deluxe">Deluxe order</button>
+    </div>
+  </div>
+</section>
+
+<script>
+var input = document.getElementById("request");
+var plans = document.getElementById("plans");
+var err = document.getElementById("err");
+
+document.getElementById("orderNow").onclick = function () {
+  var problem = checkRequest(input.value);
+  if (problem) {
+    err.textContent = problem;
+    plans.style.display = "none";
+    plans.classList.remove("show");
+    return;
+  }
+  err.textContent = "";
+  plans.style.display = "block";
+  plans.classList.add("show");
+  plans.scrollIntoView({ behavior: "smooth" });
+};
+
+document.querySelectorAll("[data-plan]").forEach(function (b) {
+  b.onclick = function () {
+    if (checkRequest(input.value)) return;
+    // Placeholder for now: opens an email with the request filled in
+    var subject = encodeURIComponent(b.dataset.plan + " order");
+    var body = encodeURIComponent("Requested edit: " + input.value);
+    location.href = "mailto:formakallo@greiz-inc.com?subject=" + subject + "&body=" + body;
+  };
+});
+var keywords = ["remove","erase","delete","background","brighten","brightness","darken","color","colour","crop","resize","retouch","blur","sharpen","contrast","saturat","filter","edit","fix","smooth","skin","blemish","object","replace","add","change","swap","black and white","vintage","restore","enhance","cut out","clean","whiten","teeth","eyes","shadow","light","logo","text","wrinkle","scratch","noise","hdr","warm","cool"];
+
+function checkRequest(text) {
+  var t = text.trim().toLowerCase();
+  var words = t.split(/\s+/).filter(Boolean);
+  if (t.length < 10 || words.length < 2) return "Please describe the edit in a bit more detail.";
+  if (/(.)\1{3,}/.test(t)) return "That looks like random typing. Please describe the edit you want.";
+  var letters = (t.match(/[a-z]/g) || []).length;
+  if (letters / t.length < 0.6) return "Please describe the edit using words.";
+  var bad = words.filter(function (w) {
+    return w.length >= 4 && (!/[aeiouy]/.test(w) || /[bcdfghjklmnpqrstvwxz]{5,}/.test(w));
+  });
+  if (bad.length > words.length / 2) return "That doesn't look like a real request. Please try again.";
+  var found = keywords.some(function (k) { return t.indexOf(k) !== -1; });
+  if (!found) return "Tell us what to edit, for example: remove the background or fix the colors.";
+  return "";
+}
+</script>
+</body>
+</html>
